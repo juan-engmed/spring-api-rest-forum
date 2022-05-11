@@ -38,13 +38,13 @@ public class TopicosController {
 
     @PostMapping()
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void saveTopico(@RequestBody @Valid TopicoFormDTO topicoFromDTO){
+    public TopicoDTO saveTopico(@RequestBody @Valid TopicoFormDTO topicoFromDTO){
 
         var curso = cursoRepository.findByNome(topicoFromDTO.getNomeCurso());
 
        Topico topico = topicoFromDTO.converter(topicoFromDTO, curso);
 
-       repository.save(topico);
+       return new TopicoDTO(repository.save(topico));
 
     }
 
