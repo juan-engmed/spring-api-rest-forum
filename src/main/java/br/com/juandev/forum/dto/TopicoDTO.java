@@ -33,11 +33,8 @@ public class TopicoDTO {
         this.dataCriacao = topico.getDataCriacao();
     }
 
-
     public static List<TopicoDTO> converter(List<Topico> topicos) {
 
-         var dtoReturn = topicos.stream().map(TopicoDTO::new).collect(Collectors.toList());
-
-         return dtoReturn;
+        return topicos.stream().map(TopicoDTO::new).collect(Collectors.toList());
     }
 }
