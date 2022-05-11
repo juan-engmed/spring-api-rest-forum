@@ -25,8 +25,6 @@ public class ExceptionControllerHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public List<ErrorFormDTO> handle(MethodArgumentNotValidException exception) {
 
-        List<ErrorFormDTO> dto= new ArrayList<>();
-
         var fieldErrors = exception.getBindingResult().getFieldErrors();
 
         var dtoReturn = fieldErrors.stream()
