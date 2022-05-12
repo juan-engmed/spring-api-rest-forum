@@ -2,6 +2,7 @@ package br.com.juandev.forum.controller;
 
 import br.com.juandev.forum.config.validation.SearchNotFoundException;
 import br.com.juandev.forum.dto.TopicoDTO;
+import br.com.juandev.forum.dto.TopicoDetalhadoDTO;
 import br.com.juandev.forum.dto.TopicoFormDTO;
 import br.com.juandev.forum.dto.UpdateTopicoFormDTO;
 import br.com.juandev.forum.entity.Topico;
@@ -35,7 +36,7 @@ public class TopicosController {
     private final CursoRepository cursoRepository;
 
     @GetMapping()
-    public List<TopicoDTO> lista(String nomeCurso){
+    public List<TopicoDTO> lista(){
 
         List<Topico> topicos = repository.findAll();
 
@@ -43,11 +44,11 @@ public class TopicosController {
     }
 
     @GetMapping("/{id}")
-    public TopicoDTO getTopico(@PathVariable("id") Long id){
+    public TopicoDetalhadoDTO getTopico(@PathVariable("id") Long id){
         var topico = repository.findById(id).
                 orElseThrow(() -> new SearchNotFoundException("Tópico", id));
 
-        return new TopicoDTO(topico);
+        return new TopicoDetalhadoDTO(topico);
 
     }
 
