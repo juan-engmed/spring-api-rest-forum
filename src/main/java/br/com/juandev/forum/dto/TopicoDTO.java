@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,9 +34,8 @@ public class TopicoDTO {
         this.dataCriacao = topico.getDataCriacao();
     }
 
+    public static Page<TopicoDTO> converter(Page<Topico> topicos) {
 
-    public static List<TopicoDTO> converter(List<Topico> topicos) {
-
-        return topicos.stream().map(TopicoDTO::new).collect(Collectors.toList());
+        return topicos.map((TopicoDTO::new));
     }
 }

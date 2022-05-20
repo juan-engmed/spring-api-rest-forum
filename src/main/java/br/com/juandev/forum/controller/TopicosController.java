@@ -9,6 +9,9 @@ import br.com.juandev.forum.entity.Topico;
 import br.com.juandev.forum.repository.CursoRepository;
 import br.com.juandev.forum.repository.TopicoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,11 +40,20 @@ public class TopicosController {
     private final CursoRepository cursoRepository;
 
     @GetMapping()
-    public List<TopicoDTO> lista(){
+    public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso,
+                                 @RequestParam int pagina, @RequestParam int qtd){
 
-        List<Topico> topicos = repository.findAll();
+        Pageable paginacao = PageRequest.of(pagina, qtd);
 
-        return TopicoDTO.converter(topicos);
+        if(nomeCurso == null) {
+            Page<Topico> topicos = repository.findAll(paginacao);
+            return TopicoDTO.converter(topicos);
+        }
+
+        else{
+            Page<Topico> topicos = repository.findByCursoNomeContaining(nomeCurso, paginacao);
+            return TopicoDTO.converter(topicos);
+        }
     }
 
     @GetMapping("/{id}")
