@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -41,17 +43,15 @@ public class TopicosController {
 
     @GetMapping()
     public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso,
-                                 @RequestParam int pagina, @RequestParam int qtd){
-
-        Pageable paginacao = PageRequest.of(pagina, qtd);
+                                 @PageableDefault(sort ="id", direction = Sort.Direction.ASC, size = 10) Pageable pageable){
 
         if(nomeCurso == null) {
-            Page<Topico> topicos = repository.findAll(paginacao);
+            Page<Topico> topicos = repository.findAll(pageable);
             return TopicoDTO.converter(topicos);
         }
 
         else{
-            Page<Topico> topicos = repository.findByCursoNomeContaining(nomeCurso, paginacao);
+            Page<Topico> topicos = repository.findByCursoNomeContaining(nomeCurso, pageable);
             return TopicoDTO.converter(topicos);
         }
     }
