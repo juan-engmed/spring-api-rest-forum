@@ -5,19 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TopicoDTO {
+public class TopicoDTO{
 
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 

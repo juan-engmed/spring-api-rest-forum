@@ -9,6 +9,10 @@ import br.com.juandev.forum.entity.Topico;
 import br.com.juandev.forum.repository.CursoRepository;
 import br.com.juandev.forum.repository.TopicoRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +33,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/topicos")
 @Validated
+@CacheConfig(cacheNames = "Topico")
 public class TopicosController {
 
     private final TopicoRepository repository;
@@ -42,6 +46,7 @@ public class TopicosController {
     private final CursoRepository cursoRepository;
 
     @GetMapping()
+    @Cacheable(value = "listaDeTopicos")
     public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso,
                                  @PageableDefault(sort ="id", direction = Sort.Direction.ASC, size = 10) Pageable pageable){
 
@@ -68,6 +73,7 @@ public class TopicosController {
     @PostMapping()
     @Transactional
     @ResponseStatus(code = HttpStatus.CREATED)
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public TopicoDTO saveTopico(@RequestBody @Valid TopicoFormDTO topicoFromDTO){
 
         var curso = cursoRepository.findByNome(topicoFromDTO.getNomeCurso());
@@ -80,6 +86,7 @@ public class TopicosController {
 
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public TopicoDTO updateTopico(@PathVariable("id") Long id, @RequestBody @Valid UpdateTopicoFormDTO updateTopicoFormDTO ) {
         var topico = repository.findById(id).
                 orElseThrow(() -> new SearchNotFoundException("Tópico", id));
@@ -94,6 +101,7 @@ public class TopicosController {
     @DeleteMapping("/{id}")
     @Transactional
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public void deleteTopico(@PathVariable("id") Long id){
         var topico = repository.findById(id).
                 orElseThrow(() -> new SearchNotFoundException("Tópico", id));
